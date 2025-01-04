@@ -6,17 +6,14 @@ from app.database import SessionLocal, engine
 
 client = TestClient(app)
 
-# Helper function to create a test database session
 @pytest.fixture
 def db_session():
-    # Create a new database session for each test
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-# Test create task endpoint
 @pytest.fixture
 def task_id(db_session):
     task_data = {
@@ -30,10 +27,8 @@ def task_id(db_session):
     task_id = response.json()["id"]
 
     yield task_id
-    # Delete the task after all tests are complete
     client.delete(f"/task/{task_id}")
 
-# Test get all tasks endpoint
 def test_get_tasks(db_session):
     response = client.get("/tasks")
     assert response.status_code == 200
@@ -41,12 +36,10 @@ def test_get_tasks(db_session):
 
     
 
-# Test get task by ID endpoint
 def test_get_task(db_session, task_id):
     response = client.get(f"/task/{task_id}")
     assert response.status_code == 200
 
-# Test update task endpoint
 def test_update_task(db_session, task_id):
     updated_data = {
         "name": "Updated Test Task",
@@ -61,13 +54,11 @@ def test_update_task(db_session, task_id):
     assert response.json()["description"] == updated_data["description"]
     assert response.json()["exp_date"] == updated_data["exp_date"]
 
-# Test patch task endpoint
 def test_complete_task(db_session, task_id):
     response = client.patch(f"/task/{task_id}")
     assert response.status_code == 200
     assert response.json()["status"] == schemas.TaskStatus.COMPLETED.value
 
-# Test delete task endpoint
 def test_delete_task(db_session, task_id):
     response = client.delete(f"/task/{task_id}")
     assert response.status_code == 200
