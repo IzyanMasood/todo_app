@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: postgresdb
+    container_name: postgres
     environment:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
@@ -14,3 +14,33 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+  
+  app:
+    container_name: todo_app
+    build: .
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    restart: no
+    depends_on:
+      - postgres
+    
+  celery_job:
+    container_name: celery_job
+    build: .
+    command: bash -c "celery -A app.celery_job.celery worker --loglevel=info "
+    volumes:
+      - .:/app
+    depends_on:
+      - app
+      - redis
+  
+  test_app:
+    container_name: test_app
+    build: .
+    command: bash -c "pip install pytest pytest-asyncio fastapi[all] httpx;pytest test_app.py"
+    depends_on:
+      - postgres
+

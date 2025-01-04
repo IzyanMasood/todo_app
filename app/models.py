@@ -7,4 +7,4 @@ class Task(Base):
     name = Column(String)
     description = Column(String)
     status = Column(Enum(TaskStatus), default=TaskStatus.PENDING)
-    exp_date = Column(String, nullable=True)
+    exp_date = Column(String(50), nullable=True)

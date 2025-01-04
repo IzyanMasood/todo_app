@@ -3,9 +3,9 @@ from datetime import datetime
 from enum import Enum
 
 class TaskStatus(Enum):
-    PENDING = "Pending"
-    COMPLETED = "Completed"
-    EXPIRED = "Expired"
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    EXPIRED = "EXPIRED"
 
 
 class Task(BaseModel):
