@@ -9,6 +9,7 @@ load_dotenv()
 
 REDIS_URL = os.getenv("REDIS_URL")
 
+# Setting up celery
 celery = Celery(__name__, broker=REDIS_URL, backend=REDIS_URL)
 
 @celery.task(name="check_exp_dates")

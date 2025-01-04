@@ -25,7 +25,7 @@ def delete_task(db: Session, task_id: int):
 
 def update_task(db: Session, task_id:int,task: schemas.Task):
     result_set = db.query(models.Task).filter(models.Task.id==task_id).first()
-    
+    # Should only update 4 attributes
     if task.name:
         result_set.name=task.name
     if task.description:
